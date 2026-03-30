@@ -451,3 +451,107 @@ export default function NotFound() {
 ## Key Takeaway
 
 > `notFound()` is just a way to say **"I can't find this data, show the not-found page instead."**
+
+# File Colocation in Next.js
+
+## What is it?
+
+File colocation means **keeping related files together** in the same folder — components, styles, tests, and utilities placed next to the page that uses them.
+
+> In Next.js, only `page.tsx` and `route.ts` are publicly accessible. Other files inside `app/` are **safe to colocate** and won't become routes.
+
+---
+
+## Without Colocation ❌
+
+Everything is scattered in a global `components/` folder:
+
+```
+app/
+  dashboard/
+    page.tsx
+components/
+  Chart.tsx        # used only in dashboard
+  StatsCard.tsx    # used only in dashboard
+  UserTable.tsx    # used only in dashboard
+```
+
+Hard to know which components belong to which page.
+
+---
+
+## With Colocation ✅
+
+Related files live next to the page that uses them:
+
+```
+app/
+  dashboard/
+    page.tsx
+    Chart.tsx        # colocated here
+    StatsCard.tsx    # colocated here
+    UserTable.tsx    # colocated here
+```
+
+Easy to find, easy to delete, easy to understand.
+
+---
+
+## Simple Example
+
+### Folder Structure
+
+```
+app/
+  users/
+    [id]/
+      page.tsx         # route → /users/123
+      UserCard.tsx     # colocated component (NOT a route)
+      useUser.ts       # colocated hook (NOT a route)
+      user.types.ts    # colocated types (NOT a route)
+```
+
+### `app/users/[id]/UserCard.tsx`
+
+```tsx
+export default function UserCard({ name }: { name: string }) {
+  return <div>{name}</div>;
+}
+```
+
+### `app/users/[id]/page.tsx`
+
+```tsx
+import UserCard from "./UserCard"; // import from same folder
+
+export default function UserPage({ params }: { params: { id: string } }) {
+  return <UserCard name="John" />;
+}
+```
+
+---
+
+## What Becomes a Route vs What Doesn't
+
+| File           | Becomes a Route? |
+| -------------- | ---------------- |
+| `page.tsx`     | ✅ Yes           |
+| `route.ts`     | ✅ Yes           |
+| `UserCard.tsx` | ❌ No            |
+| `useUser.ts`   | ❌ No            |
+| `helper.ts`    | ❌ No            |
+
+---
+
+## When to Colocate vs Share Globally
+
+| Situation                  | Where to Put It                 |
+| -------------------------- | ------------------------------- |
+| Used by **one** page only  | Colocate next to the page       |
+| Used by **multiple** pages | Move to `components/` or `lib/` |
+
+---
+
+## Key Takeaway
+
+> Colocate files that **belong together**. Move files to a shared folder only when they're **needed in multiple places**.
