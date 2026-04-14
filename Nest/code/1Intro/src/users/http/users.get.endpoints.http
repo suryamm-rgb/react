@@ -1,8 +1,0 @@
-GET http://localhost:3000/users/323/optional?limit=5
-
-GET http://localhost:3000/users
-
-GET http://localhost:3000/users/123
-GET http://localhost:3000/users/123/admin
-
-GET http://localhost:3000/users/?limit=1&page=3
